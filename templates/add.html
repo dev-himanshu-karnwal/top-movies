@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Movie{% endblock %}
+
+{% block content %}
+<div class="content">
+  <h1 class="heading">Add a Movie</h1>
+
+  <form action="{{ url_for('add') }}" method="post" novalidate class="form-width">
+
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+
+      {{ form.title.label(class="form-label font-weight-bold") }}
+      {{ form.title(class="form-control " + ('is-invalid' if form.title.errors else '')) }}
+
+      {% if form.title.errors %}
+      <div class="invalid-feedback">
+        {% for error in form.title.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
+    {{ form.submit(class="button") }}
+  </form>
+
+</div>
+{% endblock %}

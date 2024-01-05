@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Movies{% endblock %}
+
+{% block content %}
+
+<!-- {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">
+  <button type="button" class="ml-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  {{ message[0] }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %} -->
+
+
+
+<div class="content">
+  <h1 class="heading">{{ movie.title }}</h1>
+  <p class="description">Edit Movie Rating</p>
+
+  <form action="{{ url_for('edit', id=movie.id) }}" method="post" novalidate class="form-width">
+
+    {{ form.hidden_tag() }}
+
+    {% for field in form if field.type != 'CSRFTokenField' and field.type != 'SubmitField' %}
+    <div class="form-group">
+      {{ field.label(class="form-label font-weight-bold") }}
+
+      {% if field.name == 'rating' %}
+      {{ field(class="form-control " + ('is-invalid' if field.errors else ''),
+      type='number', step='0.1') }}
+      {% if movie.rating %}
+      <small id="previousRating" class="form-text text-muted"><b>Last Rating:</b> {{ movie.rating }} <button
+          type="button" class="btn btn-outline-secondary btn-sm float-right" style="height: auto">Use
+          this</button></small>
+      {% endif %}
+
+      {% elif field.name == 'review' %}
+      {{ field(class="form-control " + ('is-invalid' if field.errors else '')) }}
+      {% if movie.review %}
+      <small id="previousReview" class="form-text text-muted"><b>Last Review:</b> {{ movie.review }}<button
+          type="button" class="btn btn-outline-secondary btn-sm float-right" style="height: auto">Use
+          this</button></small>
+      {% endif %}
+
+      {% endif %}
+      {% if field.errors %}
+      <div class="invalid-feedback">
+        {% for error in field.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+    {% endfor %}
+
+    {{ form.submit(class="button") }}
+  </form>
+
+</div>
+
+<script>
+  document.querySelectorAll('.btn-outline-secondary').forEach(btnEle => {
+    btnEle.addEventListener('click', function (e) {
+
+      const val = btnEle.closest('small').innerText.replace('Last Rating: ', '').replace('Use this', '').replace('Last Review: ', '');
+      console.log(val, Number(val));
+
+      btnEle.closest('small').previousElementSibling.value = Number(val) ? Number.parseFloat(val) : val
+    })
+  })
+</script>
+{% endblock %}
